@@ -15,40 +15,41 @@ public class Server {
 
         Thread thread1 = new Thread(() -> {
             thread1Lock.lock();
+
             try {
                 for (int i = 0; i < 50; i += 2) {
                     server.addNumber(i);
                     condition.await();
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 thread1Lock.unlock();
             }
+
         });
 
         Thread thread2 = new Thread(() -> {
+
             for (int i = 1; i < 50; i += 2) {
+
                 thread1Lock.lock();
+
                 try {
                     server.addNumber(i);
+
                     condition.signal();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     thread1Lock.unlock();
                 }
+
             }
         });
 
         thread1.start();
-
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         thread2.start();
 
         try {
@@ -57,6 +58,7 @@ public class Server {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         server.show();
     }
 
